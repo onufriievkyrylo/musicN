@@ -9,7 +9,6 @@ const api = require('./api')
 
 async function main() {
   const app = new Koa()
-  const host = process.env.HOST || '0.0.0.0'
   const port = process.env.PORT || 3000
   config.dev = app.env === 'development'
 
@@ -34,9 +33,9 @@ async function main() {
     })
   })
 
-  const server = app.listen(port, host)
+  const server = app.listen(port)
   sockets.create(server)
-  console.log(`Server listening on ${host}:${port}`)
+  console.log(`Server listening on post - ${port}`)
 }
 
 main()

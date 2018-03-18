@@ -2,14 +2,14 @@ import Vue from 'vue'
 import eio from 'engine.io-client'
 import { headers } from './axios'
 
-const API_URL = `ws://${process.env.HOST}:${process.env.PORT}/`
+// const API_URL = location.origin.replace(/^http/, 'ws')
 
-const opts = {
-  extraHeaders: {
-  }
-}
+// const opts = {
+//   extraHeaders: {
+//   }
+// }
 
-const socket = eio(API_URL, opts)
+const socket = eio()
 
 socket.on('open', () => {
   headers({
