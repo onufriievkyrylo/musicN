@@ -3,7 +3,7 @@ import Vue from 'vue'
 import routes from './routes.json'
 
 var axios = Axios.create({
-  baseURL: `http://${process.env.HOST}:${process.env.PORT}/api/`,
+  baseURL: `https://musicn.herokuapp.com/api/`,
   timeout: 1000
 })
 
