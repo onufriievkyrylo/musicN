@@ -13,15 +13,15 @@
     "pages_chanel__token.2cdeac90b9542ccb9ab7.js",
     "pages_index.b5ba61a9d589e80ad3b9.js",
     "pages_about.2149f9de18fc24b9aa03.js",
-    "vendor.632e13b69bf9e377c3ef.js",
+    "vendor.6e92d1b6990c1d4c1e64.js",
     "app.052a71944f67525eac57.js",
-    "manifest.08ae390e04c1d1b18d39.js",
+    "manifest.e238afe5f54ed43bd1be.js",
     "LICENSES",
     "index.spa.html"
   ],
   "initial": [
-    "manifest.08ae390e04c1d1b18d39.js",
-    "vendor.632e13b69bf9e377c3ef.js",
+    "manifest.e238afe5f54ed43bd1be.js",
+    "vendor.6e92d1b6990c1d4c1e64.js",
     "app.052a71944f67525eac57.js"
   ],
   "async": [

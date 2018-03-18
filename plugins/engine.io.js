@@ -2,7 +2,7 @@ import Vue from 'vue'
 import eio from 'engine.io-client'
 import { headers } from './axios'
 
-const API_URL = `http://musicn.herokuapp.com`
+const API_URL = `ws://${process.env.HOST}:${process.env.PORT}/`
 
 const opts = {
   extraHeaders: {
