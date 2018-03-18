@@ -3,7 +3,7 @@ import Vue from 'vue'
 import routes from './routes.json'
 
 var axios = Axios.create({
-  baseURL: 'http://localhost:3000/api/',
+  baseURL: `http://${process.env.HOST}:${process.env.PORT}/api/`,
   timeout: 1000
 })
 

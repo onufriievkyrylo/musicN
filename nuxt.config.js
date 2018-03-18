@@ -1,6 +1,10 @@
 module.exports = {
   mode: 'spa',
   loading: { color: '#41b883' },
+  env: {
+    HOST: process.env.HOST || '0.0.0.0',
+    PORT: process.env.PORT || 3000
+  },
   head: {
     title: 'starter',
     meta: [
