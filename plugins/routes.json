@@ -1,0 +1,7 @@
+{
+  "chenels": "/chanels",
+  "chanel": "/chanels/:token",
+  "chanel-playlist": "/chanels/:token/playlist",
+  "chanel-play": "/chanels/:token/play",
+  "uploads": "/uploads"
+}
