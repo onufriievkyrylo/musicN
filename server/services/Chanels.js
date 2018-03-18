@@ -12,10 +12,14 @@ class Chanels {
     return new Token({ cid: chanel.id })
   }
   static connect(cid, sid) {
-    const socket = sockets.instance.getSocket(sid)
-    const chanel = sockets.instance.getChanel(cid)
-    chanel.join(socket)
-    return chanel.state
+    try {
+      const chanel = sockets.instance.getChanel(cid)
+      const socket = sockets.instance.getSocket(sid)
+      chanel.join(socket)
+      return chanel.state
+    } catch (err) {
+      console.log(err)
+    }
   }
   static destroy(cid) {
     // TODO after add chanel owner

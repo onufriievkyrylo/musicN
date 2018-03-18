@@ -27,6 +27,7 @@ class Server {
     }
   }
   getChanel(cid) {
+    console.log(cid)
     const chanel = this.chanels[cid]
     if (chanel) {
       return chanel
