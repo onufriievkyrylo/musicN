@@ -19,7 +19,11 @@ async function main() {
     await builder.build()
   }
 
-  app.use(mount('/uploads', static(`${__dirname}/../uploads`)));
+  app.use(mount('/uploads', static(`${__dirname}/../uploads`, { 
+    setHeaders(res) {
+      res.setHeader('Accept-Ranges', 'bytes')
+    }
+   })));
 
   app.use(mount('/api', api))
 

@@ -1,6 +1,10 @@
 * {
   box-sizing: border-box;
 }
+.el-upload, .el-upload-dragger {
+  width: 100%!important;
+  height: 130px!important;
+}
 html, body {
   background-color: #fff;
   color: #2e2f30;
