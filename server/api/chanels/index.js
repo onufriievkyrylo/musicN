@@ -37,7 +37,9 @@ router.put('/:token/play', ctx => {
 
 router.get('/:token', ctx => {
   const { sid } = ctx.headers
-  ctx.body = Chanels.connect(ctx.state.cid, sid)
+  ctx.body = {
+    cid: Chanels.connect(ctx.state.cid, sid)
+  }
 })
 
 router.del('/:token', ctx => {

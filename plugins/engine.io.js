@@ -37,9 +37,14 @@ export function on(event, callback) {
   })
 }
 
+export function emit(event, data) {
+  data.timestamp = Date.now()
+  socket.send(JSON.stringify([event, data]))
+}
+
 const VueSocket = {
   install(vue) {
-    vue.prototype.$socket = { connect, disconnect, on }
+    vue.prototype.$socket = { connect, disconnect, on, emit }
   }
 }
 

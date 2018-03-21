@@ -3,7 +3,7 @@ import NuxtLoading from './components/nuxt-loading.vue'
 
 import '..\\assets\\css\\main.css'
 
-import '..\\assets\\css\\font-awesome.min.css'
+import '..\\node_modules\\font-awesome\\css\\font-awesome.min.css'
 
 import '..\\node_modules\\element-ui\\lib\\theme-chalk\\index.css'
 

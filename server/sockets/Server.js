@@ -39,7 +39,7 @@ class Server {
     const socket = this.getSocket(sid)
     const chanel = new Chanel(this)
     this.chanels[chanel.id] = chanel
-    socket.broadcast('new chanel', chanel)
+    socket.broadcast('new chanel', chanel.id)
     return chanel
   }
 }

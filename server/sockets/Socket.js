@@ -11,12 +11,23 @@ class Socket {
         chanel.leave(this)
       })
     })
+    this.on('play', data => {
+      this.broadcast('play', data, data.cid)
+    })
+    this.on('push playlist', data => {
+      this.broadcast('push playlist', data, data.cid)
+    })
+  }
+  on(event, callback) {
+    this.socket.on('message', json => {
+      const data = JSON.parse(json)
+      if (data[0] === event) {
+        callback(data[1])
+      }
+    })
   }
   emit(event, data) {
-    this.socket.send(JSON.stringify([
-      event,
-      data
-    ]))
+    this.socket.send(JSON.stringify([event, data]))
   }
   broadcast(event, data, to) {
     const clients = to ? this.chanels[to].clients : this.server.clients

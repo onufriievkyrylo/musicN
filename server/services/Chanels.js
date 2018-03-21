@@ -16,7 +16,7 @@ class Chanels {
       const chanel = sockets.instance.getChanel(cid)
       const socket = sockets.instance.getSocket(sid)
       chanel.join(socket)
-      return chanel.state
+      return chanel.id
     } catch (err) {
       console.log(err)
     }

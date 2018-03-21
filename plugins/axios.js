@@ -3,8 +3,7 @@ import Vue from 'vue'
 import routes from './routes.json'
 
 var axios = Axios.create({
-  baseURL: `https://musicn.herokuapp.com/api/`,
-  timeout: 1000
+  baseURL: `/api/`
 })
 
 export const headers = function (headers = {}) {

@@ -3,7 +3,7 @@
     <el-header>
       <app-header>
         <div slot="controls">
-          <div class="button" @click="createChanel"> Create chanel </div>
+          <el-button class="button" type="primary" @click="createChanel"> Create chanel </el-button>
         </div>
       </app-header>
     </el-header>
