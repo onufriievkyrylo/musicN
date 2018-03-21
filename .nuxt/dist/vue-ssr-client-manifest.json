@@ -1,7 +1,7 @@
 {
   "publicPath": "/_nuxt/",
   "all": [
-    "pages_chanel__token.8cea83020b6333950048.js",
+    "pages_chanel__token.a7d3dac8c0bdeb3bc325.js",
     "img/fontawesome-webfont.912ec66.svg",
     "fonts/element-icons.2fad952.woff",
     "fonts/element-icons.6f0a763.ttf",
@@ -15,17 +15,17 @@
     "pages_about.2149f9de18fc24b9aa03.js",
     "vendor.8a53325102d360172f60.js",
     "app.ce43347706681869185b.js",
-    "manifest.a3652bc2b0513cc9d229.js",
+    "manifest.67f7017ac745f966dcd6.js",
     "LICENSES",
     "index.spa.html"
   ],
   "initial": [
-    "manifest.a3652bc2b0513cc9d229.js",
+    "manifest.67f7017ac745f966dcd6.js",
     "vendor.8a53325102d360172f60.js",
     "app.ce43347706681869185b.js"
   ],
   "async": [
-    "pages_chanel__token.8cea83020b6333950048.js",
+    "pages_chanel__token.a7d3dac8c0bdeb3bc325.js",
     "layouts_default.b47dd81cc2f9679de660.js",
     "pages_index.b5ba61a9d589e80ad3b9.js",
     "pages_about.2149f9de18fc24b9aa03.js"

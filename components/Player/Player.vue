@@ -102,7 +102,7 @@ export default {
       } else {
         this.audio.pause()
         this.audio.src = '/' + this.playlist[onPlay].url
-        this.audio.currentTime = currentTime + (Date.now() - timestamp) / 1000
+        this.audio.currentTime = currentTime
       }
       this.isPlaying = isPlaying
     })
