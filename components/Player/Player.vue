@@ -1,6 +1,6 @@
 <template>
   <div class="player">
-    <div class="preview" :style="{ 'background-image': currentTrack && currentTrack.image && `url(${currentTrack.image})` }">
+    <div class="preview" :style="{ 'background-image': currentTrack && currentTrack.albumImage && `url(${currentTrack.albumImage})` }">
       <div class="info">
         <div class="meta main" v-if="currentTrack">
           <span class="title"> {{ currentTrack.title || currentTrack.filename }} </span>
@@ -23,7 +23,7 @@
     <div class="playlist">
       <div class="track" v-for="(track, index) in playlist" :key="index" @click="changeTrack(index)">
         <div> {{index + 1}} </div>
-        <img class="picture" v-if="track.image" :src="track.image">
+        <img class="picture" v-if="track.albumImage" :src="track.albumImage">
         <img class="picture" v-else src="~/assets/img/album-placeholder.png">
         <div class="meta">
           <span class="title"> {{ track.title || track.filename }} </span>
@@ -31,6 +31,13 @@
         </div>
       </div>
     </div>
+    <el-dialog title="Info" :visible.sync="centerDialogVisible" center>
+      <span>It should be noted that the content will not be aligned in center by default</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="addEvents">Confirm</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -44,6 +51,7 @@ export default {
   props: ['cid'],
   data() {
     return {
+      centerDialogVisible: true,
       audio: new Audio(),
       duration: 0,
       currentTime: 0,
@@ -79,24 +87,27 @@ export default {
     this.audio.addEventListener('timeupdate', () => {
       this.currentTime = this.audio.currentTime
     })
-    this.$socket.on('push playlist', ({ track }) => this.push(track))
-    this.$socket.on('play', ({ isPlaying, onPlay, currentTime, timestamp }) => {
-      if (isPlaying) {
-        this.audio.src = this.playlist[onPlay].url
-        this.audio.currentTime = currentTime + (Date.now() - timestamp) / 1000
-        this.audio.play()
-      } else {
-        this.audio.pause()
-        this.audio.src = this.playlist[onPlay].url
-        this.audio.currentTime = currentTime
-      }
-      this.isPlaying = isPlaying
-    })
   },
   methods: {
+    addEvents() {
+      this.centerDialogVisible = false
+      this.$socket.on('push playlist', ({ track }) => this.push(track))
+      this.$socket.on('play', ({ isPlaying, onPlay, currentTime, timestamp }) => {
+        if (isPlaying) {
+          this.audio.src = this.currentTrack.url
+          this.audio.currentTime = currentTime + (Date.now() - timestamp) / 1000
+          this.audio.play()
+        } else {
+          this.audio.pause()
+          this.audio.src = this.currentTrack.url
+          this.audio.currentTime = currentTime
+        }
+        this.isPlaying = isPlaying
+      })
+    },
     changeTrack(index) {
       this.onPlay = index
-      this.audio.src = this.playlist[this.onPlay].url
+      this.audio.src = this.currentTrack.url
       if (this.isPlaying) {
         this.audio.play()
       }
@@ -132,7 +143,6 @@ export default {
       const data = new FormData()
       data.append('file', file)
       const track = await this.$http.post('uploads', data)
-      track.image = track.image ? this.btoa(track.image) : undefined
       this.push(track)
       this.$socket.emit('push playlist', {
         cid: this.cid,
@@ -152,10 +162,11 @@ export default {
       return moment(date).format('YYYY')
     },
     push(track) {
+      track.albumImage = track.image ? this.btoa(track.image) : undefined
       this.playlist.push(track)
       if (this.onPlay === -1) {
         this.onPlay = 0
-        this.audio.src = this.playlist[this.onPlay].url
+        this.audio.src = this.currentTrack.url
       }
     }
   }
