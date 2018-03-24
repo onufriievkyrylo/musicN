@@ -1,46 +1,36 @@
 <template>
   <div class="player">
-    <div class="controls">
-      <!-- <el-button class="volume" round type="primary">
-        <i class="fa fa-volume-up" aria-hidden="true"></i>
-      </el-button> -->
-      <el-button class="play" round type="primary" @click="play" :disabled="onPlay === -1">
-        <i :class="['fa', isPlaying ? 'fa-pause' : 'fa-play']" aria-hidden="true"></i>
-      </el-button>
-      <!-- <el-button class="stop" round type="primary">
-        <i class="fa fa-stop" aria-hidden="true"></i>
-      </el-button> -->
+    <div class="preview" :style="{ 'background-image': currentTrack && currentTrack.image && `url(${currentTrack.image})` }">
+      <div class="info">
+        <div class="meta main" v-if="currentTrack">
+          <span class="title"> {{ currentTrack.title || currentTrack.filename }} </span>
+          <span class="artist" v-if="currentTrack.artist"> - {{ currentTrack.artist }} </span>
+        </div>
+        <div class="meta album" v-if="currentTrack"> {{ currentTrack.album }} </div>
+      </div>
+      <div class="controls">
+        <div class="button play" :class="{ disabled: !currentTrack }" @click="play">
+          <i :class="['fa', isPlaying ? 'fa-pause' : 'fa-play']" aria-hidden="true"></i>
+        </div>
+        <div class="current-time"> {{ formatedCurrentTime }} </div>
+        <el-slider class="slider" v-model="percentage" :show-tooltip="false" @change="changeTime"></el-slider>
+        <div class="duration"> {{ formatedDuration }} </div>
+      </div>
     </div>
-    <div class="progress">
-      <div class="current-time"> {{ formatedCurrentTime }} </div>
-      <el-slider class="slider" v-model="percentage" :show-tooltip="false" @change="changeTime"></el-slider>
-      <div class="duration"> {{ formatedDuration }} </div>
-    </div>
-    <el-upload class="upload" action="upload" :http-request="upload" drag multiple>
+    <el-upload class="upload" action="upload" :http-request="upload" drag :show-file-list="false">
       <i class="el-icon-upload"></i>
     </el-upload>
     <div class="playlist">
-      <div class="track header">
-        <div class="picture"></div>
-        <div class="title">Title</div>
-        <div class="singer">Singer</div>
-        <div class="album">Album</div>
-        <div class="year">Year</div>
-        <div class="tags">Tags</div>
-      </div>
-      <div class="track" v-for="track, index in playlist" :key="index">
-        <!-- {{ track.tags.raw.USLT.text }} -->
-        <img class="picture" :src="btoa(track.tags.raw.APIC)" :alt="track.tags.raw.TALB">
-        <div class="title">{{ track.tags.raw.TIT2 }}</div>
-        <div class="singer">{{ track.tags.raw.TPE1 }}</div>
-        <div class="album">{{ track.tags.raw.TALB }}</div>
-        <div class="year">{{ formatDate(track.tags.raw.TYER) }}</div>
-        <div class="tags">{{ track.tags.raw.TCON }}</div>
-        <!-- {{ track.url }} -->
+      <div class="track" v-for="(track, index) in playlist" :key="index" @click="changeTrack(index)">
+        <div> {{index + 1}} </div>
+        <img class="picture" v-if="track.image" :src="track.image">
+        <img class="picture" v-else src="~/assets/img/album-placeholder.png">
+        <div class="meta">
+          <span class="title"> {{ track.title || track.filename }} </span>
+          <span class="artist" v-if="track.artist"> - {{ track.artist }} </span>
+        </div>
       </div>
     </div>
-    <br><br><br>
-    <!-- {{ playlist }} -->
   </div>
 </template>
 
@@ -54,7 +44,7 @@ export default {
   props: ['cid'],
   data() {
     return {
-      audio: document.createElement('audio'),
+      audio: new Audio(),
       duration: 0,
       currentTime: 0,
       playlist: [],
@@ -76,6 +66,9 @@ export default {
       set(percentage) {
         this.currentTime = this.duration * percentage / 100
       }
+    },
+    currentTrack() {
+      return this.playlist[this.onPlay]
     }
   },
   created() {
@@ -86,37 +79,36 @@ export default {
     this.audio.addEventListener('timeupdate', () => {
       this.currentTime = this.audio.currentTime
     })
-    this.$socket.on('push playlist', ({ track }) => {
-      this.playlist.push(track)
-      if (this.onPlay === -1) {
-        this.onPlay = 0
-        this.audio.src = '/' + this.playlist[this.onPlay].url
-      }
-    })
+    this.$socket.on('push playlist', ({ track }) => this.push(track))
     this.$socket.on('play', ({ isPlaying, onPlay, currentTime, timestamp }) => {
       if (isPlaying) {
-        this.audio.src = '/' + this.playlist[onPlay].url
+        this.audio.src = this.playlist[onPlay].url
         this.audio.currentTime = currentTime + (Date.now() - timestamp) / 1000
-        console.log(this.audio.currentTime)
         this.audio.play()
       } else {
         this.audio.pause()
-        this.audio.src = '/' + this.playlist[onPlay].url
+        this.audio.src = this.playlist[onPlay].url
         this.audio.currentTime = currentTime
       }
       this.isPlaying = isPlaying
     })
   },
   methods: {
-    formatDate(date) {
-      return moment(date).format('YYYY')
+    changeTrack(index) {
+      this.onPlay = index
+      this.audio.src = this.playlist[this.onPlay].url
+      if (this.isPlaying) {
+        this.audio.play()
+      }
     },
-    btoa({ mime, imageBuffer }) {
-      const buffer = new Uint8Array(imageBuffer.data)
-      const blob = new Blob([buffer], { type: `image/${mime}` })
-      const URL = window.URL || window.webkitURL
-      const src = URL.createObjectURL(blob)
-      return src
+    sync() {
+      this.$socket.emit('play', {
+        cid: this.cid,
+        playlist: this.playlist,
+        isPlaying: this.isPlaying,
+        onPlay: this.onPlay,
+        currentTime: this.currentTime
+      })
     },
     play() {
       if (this.isPlaying) {
@@ -131,7 +123,6 @@ export default {
         onPlay: this.onPlay,
         currentTime: this.currentTime
       })
-      // this.$socket emit broadcast PLAY
     },
     changeTime(percentage) {
       this.audio.currentTime = this.audio.duration * percentage / 100
@@ -141,15 +132,31 @@ export default {
       const data = new FormData()
       data.append('file', file)
       const track = await this.$http.post('uploads', data)
-      this.playlist.push(track)
-      if (this.onPlay === -1) {
-        this.onPlay = 0
-        this.audio.src = '/' + this.playlist[this.onPlay].url
-      }
+      track.image = track.image ? this.btoa(track.image) : undefined
+      this.push(track)
       this.$socket.emit('push playlist', {
         cid: this.cid,
         track
       })
+    },
+
+    // util methods
+    btoa({ mime, imageBuffer }) {
+      const buffer = new Uint8Array(imageBuffer.data)
+      const blob = new Blob([buffer], { type: `image/${mime}` })
+      const URL = window.URL || window.webkitURL
+      const src = URL.createObjectURL(blob)
+      return src
+    },
+    formatDate(date) {
+      return moment(date).format('YYYY')
+    },
+    push(track) {
+      this.playlist.push(track)
+      if (this.onPlay === -1) {
+        this.onPlay = 0
+        this.audio.src = this.playlist[this.onPlay].url
+      }
     }
   }
 }
@@ -157,55 +164,57 @@ export default {
 
 
 <style scoped>
+.preview {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  max-height: 100vh;
+  background-image: url(~/assets/img/album-placeholder.png);
+  background-color: rgba(0, 0, 0, 0.4);
+  background-blend-mode: overlay;
+  background-size: cover;
+  background-position: center;
+}
+.preview > .info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: whitesmoke;
+  font-size: 25px;
+  text-shadow: 0px 0px 8px black;
+}
+.preview > .info > .meta {
+  margin: 10px 0;
+  text-align: center
+}
+.preview > .info > .meta.main {
+  font-size: 40px;
+}
 .track {
   display: flex;
   align-items: center;
   height: 50px;
   margin: 5px 0;
 }
-.track.header {
-  font-weight: bold;
-}
 .track > * {
   margin-right: 10px
 }
 .track > .picture {
   height: 100%;
-  width: 70px;
 }
-.track > .title, .track > .singer {
-  width: 20%;
+.track > .meta {
   font-weight: bold;
-}
-.track > .album {
-  width: 15%;
-}
-.track > .year {
-  width: 10%;
 }
 .controls {
   display: flex;
   align-items: center;
-  justify-content: center;
+  background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.6));
+  padding: 5px 10px;
 }
-.play, .stop, .volume {
-  margin: 0 20px;
-  padding: 0px;
-  border-radius: 50%;
-}
-.play {
-  width: 150px;
-  height: 150px;
-  font-size: 70px;
-}
-.stop, .volume {
-  width: 70px;
-  height: 70px;
-  font-size: 30px;
-}
-.progress {
-  display: flex;
-  align-items: center;
+.controls > div {
+  margin: 0 10px;
 }
 .slider {
   flex-grow: 1;
@@ -213,9 +222,18 @@ export default {
 }
 .duration, .current-time {
   font-size: 14px;
-  color: gray;
+  color: whitesmoke;
 }
-.fa-play {
-  margin-left: 15px;
+.button {
+  padding: 10px;
+  cursor: pointer;
+}
+.button.disabled {
+  color: gray;
+  pointer-events: none;
+}
+.play {
+  font-size: 25px;
+  color: whitesmoke;
 }
 </style>

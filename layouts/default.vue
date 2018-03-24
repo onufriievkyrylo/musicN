@@ -3,27 +3,25 @@
     <el-header>
       <app-header>
         <div slot="controls">
-          <el-button class="button" type="primary" @click="createChanel"> Create chanel </el-button>
+          <div class="button" @click="createChanel">
+            <i class="fa fa-plus"></i>
+            <div>Create chanel</div>
+          </div>
         </div>
       </app-header>
     </el-header>
     <el-main>
       <nuxt class="main"/>
     </el-main>
-    <el-footer>
-      <app-footer/>
-    </el-footer>
   </el-container>
 </template>
 
 <script>
 import AppHeader from '~/components/Header.vue'
-import AppFooter from '~/components/Footer.vue'
 
 export default {
   components: {
-    AppHeader,
-    AppFooter
+    AppHeader
   },
   methods: {
     async createChanel() {
