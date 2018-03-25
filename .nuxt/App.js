@@ -10,6 +10,8 @@ import '..\\node_modules\\element-ui\\lib\\theme-chalk\\index.css'
 
 let layouts = {
 
+  "_chanel": () => import('..\\layouts\\chanel.vue'  /* webpackChunkName: "layouts_chanel" */).then(m => m.default || m),
+
   "_default": () => import('..\\layouts\\default.vue'  /* webpackChunkName: "layouts_default" */).then(m => m.default || m)
 
 }
@@ -17,7 +19,7 @@ let layouts = {
 let resolvedLayouts = {}
 
 export default {
-  head: {"title":"starter","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"Nuxt.js project"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"}],"style":[],"script":[]},
+  head: {"title":"starter","meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":"Nuxt.js project"}],"link":[{"href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=cyrillic,cyrillic-ext,latin-ext","rel":"stylesheet"},{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"}],"style":[],"script":[]},
   render(h, props) {
     const loadingEl = h('nuxt-loading', { ref: 'loading' })
     const layoutEl = h(this.layout || 'nuxt')

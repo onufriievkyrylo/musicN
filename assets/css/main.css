@@ -3,13 +3,13 @@
 }
 .el-upload, .el-upload-dragger {
   width: 100%!important;
-  height: 130px!important;
+  height: 60px!important;
 }
 html, body {
   background-color: #fff;
   color: #2e2f30;
   letter-spacing: 0.5px;
-  font-family: "Source Sans Pro", Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   height: 100vh;
   margin: 0;
 }
@@ -28,6 +28,15 @@ html, body {
 
 a, a:hover, a:focus, a:visited {
   color: #41B883;
+}
+
+@media only screen and (max-width: 450px) {
+  .el-dialog {
+    width: 100%!important;
+    margin: 0!important;
+    height: 100%;
+    overflow: auto;
+  }
 }
 
 .page-enter-active, .page-leave-active {

@@ -3,6 +3,13 @@
     <div class="content">
       <player :cid="cid"></player>
     </div>
+    <el-dialog title="Share" :visible="dialogs.share">
+      <span>This application can make some noise!</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogs.share = false">Cancel</el-button>
+        <el-button type="primary" @click="copy">Copy</el-button>
+      </span>
+    </el-dialog>
   </section>
 </template>
 
@@ -12,8 +19,14 @@ import { Notification } from 'element-ui'
 import * as Axios from '~/plugins/axios'
 
 export default {
+  layout: 'chanel',
   components: {
     Player
+  },
+  data() {
+    return {
+      dialogs: { share: false }
+    }
   },
   async asyncData({ params, redirect }) {
     try {
@@ -31,6 +44,11 @@ export default {
         position: 'bottom-right'
       })
       redirect('/')
+    }
+  },
+  methods: {
+    copy() {
+
     }
   }
 }
